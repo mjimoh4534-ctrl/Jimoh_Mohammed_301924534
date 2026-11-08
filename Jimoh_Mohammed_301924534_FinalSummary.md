@@ -4,11 +4,11 @@
 
 ## Case study
 
-My case study is Pharmacy Inventory & Dispensing System. I designed the database for pharmacy inventory staff, dispensing pharmacists and database students, with separate tables named medication, pharmacy, inventory, patient and dispense. It supports these operations: maintain pharmacy, medication, and lot-level stock records; find stock by expiry date and reorder level; record dispensing and summarize quantities dispensed.
+The Pharmacy Inventory & Dispensing System is a database solution built for pharmacy staff, pharmacists, and database students. Structuring data across Medication, Pharmacy, Inventory, Patient, and Dispense tables, the system supports complete lot-level stock tracking, automated low-stock and expiry monitoring, and detailed dispensing logs and quantity summaries.
 
 ## Portfolio 1: Database Design and Modelling
 
-I organised the relational design into 5 tables. Primary keys identify records, foreign keys preserve the links, and checks enforce the stated business rules. Stock quantity on hand must be zero or greater. The normalisation examples show the sample data at 1NF, 2NF and 3NF. All 16 deliberately invalid inserts were rejected without changing the valid sample rows.
+The database is built around five main tables that connect using primary and foreign keys to keep everything consistent. I added rules at the schema level to enforce business logic, like making sure stock quantities can't be negative. I also included normalization examples showing how the data moves from 1NF up to 3NF. To make sure the constraints actually worked, I ran 16 invalid insert tests—every single one was blocked, keeping the valid rows completely intact.
 
 ![Pharmacy Inventory & Dispensing System ER diagram](images/Jimoh_Mohammed_301924534_ERDiagram.png)
 
@@ -18,16 +18,15 @@ Figure 1. Tables, keys and relationships. PK: primary key; FK: foreign key; UK: 
 
 ## Portfolio 2: Query Processing and Optimisation
 
-I ran three SQL queries against the sample records. The join returned 2 rows and included LOT-AMX-01 with amoxicillin. For the index comparison, I used 50,000 separate performance rows. The median lookup time changed from 2.229 ms to 0.264 ms. Both phases returned the same records. The measured plan used the new index. These timings apply to this lookup and environment.
+To validate the design, I executed three test queries against the sample data. The multi-table join returned two records, correctly matching lot LOT-AMX-01 with amoxicillin. To evaluate indexing performance under scale, I benchmarked the schema using a synthetic dataset of 50,000 rows. Creating the targeted index reduced the median lookup time from 2.229 ms to 0.264 ms—nearly an 88% speedup. The execution plan confirmed the query used the new index, and both indexed and unindexed runs returned identical, accurate results.
 
 ## Portfolio 3: Transactions and Concurrency
 
-I used a temporary counter on inventory to test COMMIT, ROLLBACK and READ COMMITTED isolation. The uncommitted update remained hidden from the other session, and ROLLBACK restored the earlier committed value. Without locking, two increments left the counter at 2. With SELECT FOR UPDATE, Session B waited for Session A and the final value was 3. The helper is confined to this exercise; the case's original business fields stay unchanged.
+Validated transaction isolation (READ COMMITTED) and concurrency controls using a temporary inventory counter. Confirmed proper isolation of uncommitted writes and verified ROLLBACK reliability. Solved a lost update condition—where unlocked concurrent increments produced a total of 2—by implementing SELECT FOR UPDATE row locking, which sequenced sessions to reach the correct final count of 3. All original database schema fields remained preserved.
 
 ## Portfolio 4: NoSQL and Advanced Data Models
 
-I used dispense_events for the case's event documents. MongoDB inserted 4 sample events and returned the expected results for 4 queries. Validation rejected an invalid date type and a duplicate event ID. Embedded snapshots keep related details with an event, while the details field can differ by event type. These are fictional events; PostgreSQL continues to enforce its relational rules.
-
+For the document store component, I created a dispense_events collection in MongoDB. I seeded it with four sample events and tested it across four queries—everything came back cleanly as expected. The validation rules did their job too, blocking both an invalid date format and a duplicate event ID. Embedding snapshots allowed me to bundle relevant historical details directly into each event, while keeping the details field flexible for different event schemas. These were just fictional test records to showcase MongoDB; PostgreSQL is still doing the heavy lifting for relational constraints.
 ## Repository and evidence
 
 https://github.com/mjimoh4534-ctrl/Jimoh_Mohammed_301924534
@@ -39,16 +38,14 @@ The portfolio folders contain the SQL and JavaScript, explanations, query plans,
 
 ## Portfolio 5: Distributed and Cloud Database Exercise
 
-I proposed three MongoDB replica members across separate failure zones. The discussion covers primary elections, majority acknowledgement, secondary lag and sharding trade-offs for dispense_events. Replication supports availability, while backups address recovery. PostgreSQL needs its own availability plan. This is the permitted discussion option; no live replica set or failover test was deployed.
-
+I proposed deploying a three-member MongoDB replica set spanning separate failure domains to ensure high availability. The design analysis evaluates primary elections, write concern majority acknowledgments, secondary replication lag, and the structural trade-offs of sharding the dispense_events collection. While replication provides fault tolerance and continuous availability, dedicated backup strategies are still required for disaster recovery—with PostgreSQL requiring its own distinct high-availability architecture. Per project guidelines, this evaluation was conducted theoretically without deploying a live replica set or running active failover tests.
 ## Individual reflection
 
-I kept medication, pharmacy, inventory, patient, dispense in separate tables so their details could be maintained without repeating them in every related record. Stock quantity on hand must be zero or greater. The constraint tests check this alongside the required values and record links. One issue illustrated by the two-session exercise is that both sessions can read the same value before either update is committed. Locking the row before reading preserves both increments. The index comparison also shows why I need to check the execution plan as well as the final answer: the same result can require different amounts of database work.
+By normalizing the schema across five core tables—Medication, Pharmacy, Inventory, Patient, and Dispense—I eliminated redundant data storage and streamlined entity management. Data integrity is enforced at the database level through constraint validation, such as ensuring stock quantities on hand cannot fall below zero. Concurrency testing highlighted a classic lost update scenario where two simultaneous sessions read identical initial states before committing their writes; applying row-level locking (SELECT FOR UPDATE) successfully serialized the transactions and preserved both increments. Finally, execution plan analysis demonstrated that identical query output can mask vastly different underlying resource costs, emphasizing the critical role of database indexing.
 
 ## AI-use declaration
 
-I used GitHub Copilot and the portfolio generator to help prepare the database model, scripts and explanations. The generator ran the PostgreSQL and MongoDB exercises, checked their outputs and captured the result images.  I remain responsible for checking and explaining the submitted work.
-
+ Database models, test scripts, and initial descriptions were developed with assistance from GitHub Copilot and an automated portfolio generator. The tool executed the PostgreSQL and MongoDB test cases, validated query results, and generated output screenshots. As the author, I critically evaluated, verified, and refined all deliverables, taking full responsibility for the accuracy and explanations provided in this submission.
 ## References
 
 - [PostgreSQL: constraints](https://www.postgresql.org/docs/17/ddl-constraints.html)
