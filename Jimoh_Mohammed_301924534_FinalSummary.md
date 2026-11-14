@@ -4,7 +4,7 @@
 
 ## Case study
 
-The Pharmacy Inventory & Dispensing System is a database solution built for pharmacy staff, pharmacists, and database students. Structuring data across Medication, Pharmacy, Inventory, Patient, and Dispense tables, the system supports complete lot-level stock tracking, automated low-stock and expiry monitoring, and detailed dispensing logs and quantity summaries.
+The Pharmacy Inventory and Dispensing System is a database solution built for pharmacy staff, pharmacists, and database students. Structuring data across Medication, Pharmacy, Inventory, Patient, and Dispense tables, the system supports complete lot-level stock tracking, automated low-stock and expiry monitoring, and detailed dispensing logs and quantity summaries.
 
 ## Portfolio 1: Database Design and Modelling
 
